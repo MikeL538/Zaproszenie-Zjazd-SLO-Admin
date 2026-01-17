@@ -33,6 +33,12 @@ async function getData() {
     return;
   }
 
+  table.innerHTML = `<tr>
+    <th>Nazwisko</th>
+    <th>Imię</th>
+    <th>Rok Ukończenia</th>
+    <th>Dodatkowe informacje</th>
+    `;
   data.forEach((guest) => {
     createData(guest.name, guest.surname, guest.graduation, guest.add_info);
   });
@@ -49,6 +55,7 @@ buttonShowList.addEventListener("click", async (e) => {
   });
 
   if (error) {
+    table.innerHTML = "";
     alert("Złe dane!");
     console.error(error);
     return;

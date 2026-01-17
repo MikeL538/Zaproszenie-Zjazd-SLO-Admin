@@ -12,13 +12,17 @@ table {
   border: 1px solid black;
   border-collapse: collapse;
   min-width: 700px;
+  text-align: center;
 }
 
+th,
 td {
   border-bottom: 1px solid black;
-  padding: 5px;
+  padding: 5px 10px;
 }
 
-td:last-of-type {
+td:last-of-type,
+th:last-of-type {
   border-left: 1px solid black;
+  text-align: left;
 }
