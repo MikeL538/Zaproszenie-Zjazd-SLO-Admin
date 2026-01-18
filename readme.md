@@ -6,6 +6,31 @@ This application is intended **only for authorized staff (e.g. school administra
 
 ---
 
+## Live Demo
+
+The admin panel is available via **GitHub Pages**:
+
+👉 **https://mikel538.github.io/Zaproszenie-Zjazd-SLO-Admin/**
+
+The demo is provided for **portfolio and presentation purposes**.
+
+---
+
+## Demo Access (Portfolio Mode)
+
+To allow reviewers to preview the functionality without exposing real personal data, the application includes a **demo login mode**.
+
+**Demo credentials:**
+
+- **Email:** `test`
+- **Password:** `test`
+
+When using demo credentials, the application displays **mock data** instead of real database records.
+
+> Real guest data remains protected and is accessible only to authorized, invite-only accounts via Supabase Auth and Row Level Security (RLS).
+
+---
+
 ## Purpose
 
 - Allow authorized users to view the list of registered alumni
@@ -20,6 +45,7 @@ This application is intended **only for authorized staff (e.g. school administra
 - Invite-only accounts (public registration disabled)
 - Secure data access enforced by Supabase Row Level Security (RLS)
 - Alphabetically sorted list of registered guests
+- Client-side table search and filtering
 - No public access to registration data
 
 ---
@@ -67,14 +93,14 @@ This ensures that even if the frontend code is public, unauthorized users cannot
 
 ## Notes for Recruiters
 
-- This project intentionally uses a **public repository**  
-  Security is handled correctly via Supabase RLS, not by hiding code.
-- The public registration form is implemented in a **separate repository**
-- For demo purposes, this panel can be connected to a mock dataset
+- This project intentionally uses a **public repository**
+- Security is handled correctly via Supabase Auth and RLS, not by hiding source code
+- The public alumni registration form is implemented in a **separate repository**
+- Demo mode exists solely to present functionality without exposing real data
 
 ---
 
 ## Disclaimer
 
 This admin panel is not intended for public use.  
-Access is restricted to explicitly authorized users only.
+Access to real data is restricted to explicitly authorized users only.

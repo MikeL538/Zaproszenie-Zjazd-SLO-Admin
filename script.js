@@ -6,6 +6,32 @@ const supabaseKey = "sb_publishable_kSmSt52th8XAYGbce3CtwA_uIdN8fKL";
 const supabase = createClient(supabaseUrl, supabaseKey);
 const table = document.querySelector("table");
 const buttonShowList = document.querySelector("#buttonShowList");
+const searchInput = document.querySelector("#search");
+
+// Example of the APP
+function example() {
+  table.innerHTML = `<tr>
+    <th>Nazwisko</th>
+    <th>Imię</th>
+    <th>Rok Ukończenia</th>
+    <th>Dodatkowe informacje</th>
+    `;
+  createData("Jan", "Kowalski", "2004", "Członek samorządu szkolnego");
+  createData("Anna", "Nowak", "2008", "Organizatorka szkolnych wydarzeń");
+  createData(
+    "Piotr",
+    "Wiśniewski",
+    "1999",
+    "Uczestnik konkursów informatycznych",
+  );
+  createData(
+    "Katarzyna",
+    "Zielińska",
+    "2012",
+    "Aktywna w szkolnym wolontariacie",
+  );
+  createData("Michał", "Kamiński", "1995", "Kapitan drużyny sportowej");
+}
 
 function createData(name, surname, graduation, addInfo) {
   const tr = document.createElement("tr");
@@ -49,6 +75,11 @@ buttonShowList.addEventListener("click", async (e) => {
   const email = document.querySelector("#email").value;
   const password = document.querySelector("#password").value;
 
+  if (email == "test" && password == "test") {
+    example();
+    return;
+  }
+
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -62,4 +93,17 @@ buttonShowList.addEventListener("click", async (e) => {
   }
 
   getData();
+});
+
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.toLowerCase().trim();
+  const rows = table.querySelectorAll("tr");
+
+  rows.forEach((row, index) => {
+    if (index == 0) return;
+
+    const rowText = row.textContent.toLowerCase();
+
+    row.style.display = rowText.includes(query) ? "" : "none";
+  });
 });
