@@ -18,7 +18,7 @@ table {
 th,
 td {
   border-bottom: 1px solid black;
-  padding: 5px 10px;
+  padding: 15px 10px;
 }
 
 td:last-of-type,
@@ -34,5 +34,18 @@ th:last-of-type {
 }
 
 #selectSort {
+  margin-left: 5px;
   margin-right: 50px;
+}
+
+.btn-delete {
+  cursor: pointer;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(255, 212, 160);
+}
+
+.btn-delete:hover {
+  transform: scale(1.1);
 }

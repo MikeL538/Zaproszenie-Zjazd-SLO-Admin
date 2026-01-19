@@ -1,52 +1,69 @@
 # Alumni Reunion – Admin Panel
 
-Authenticated admin panel for viewing the list of registered alumni for the SLO reunion event.
+Authenticated administrative panel for viewing and managing the list of registered alumni for the SLO reunion event.
 
-This application is intended **only for authorized staff (e.g. school administration)** and provides read-only access to registration data stored in Supabase.
+This application is intended **only for authorized staff (e.g. school administration)** and provides controlled access to registration data stored in Supabase.
 
 ---
 
-## Live Demo
+## Live Demo (Portfolio)
 
 The admin panel is available via **GitHub Pages**:
 
 👉 **https://mikel538.github.io/Zaproszenie-Zjazd-SLO-Admin/**
 
-The demo is provided for **portfolio and presentation purposes**.
+This demo exists **for portfolio and presentation purposes only**.
 
 ---
 
-## Demo Access (Portfolio Mode)
+## Demo Access (Safe Preview Mode)
 
-To allow reviewers to preview the functionality without exposing real personal data, the application includes a **demo login mode**.
+To allow reviewers to explore the functionality without exposing real personal data, the application includes a **demo login mode**.
 
 **Demo credentials:**
 
 - **Email:** `test`
 - **Password:** `test`
 
-When using demo credentials, the application displays **mock data** instead of real database records.
+When logged in using demo credentials:
 
-> Real guest data remains protected and is accessible only to authorized, invite-only accounts via Supabase Auth and Row Level Security (RLS).
+- the application displays **mock (hardcoded) data**
+- database records are **not modified**
+- delete operations affect demo rows only
+
+> Real guest data is accessible **only** to invite-only Supabase accounts protected by authentication and Row Level Security (RLS).
 
 ---
 
 ## Purpose
 
-- Allow authorized users to view the list of registered alumni
-- Protect personal data via authentication and database-level security
-- Separate public registration flow from private administrative access
+- Provide authorized users with access to alumni registration data
+- Ensure personal data is protected at the database level
+- Clearly separate public registration from private administrative access
+- Demonstrate correct frontend–backend security architecture
 
 ---
 
 ## Features
 
 - Email + password authentication (Supabase Auth)
-- Invite-only accounts (public registration disabled)
-- Secure data access enforced by Supabase Row Level Security (RLS)
-- Alphabetically sorted list of registered guests
-- Client-side table search and filtering
-- No public access to registration data
+- Invite-only user accounts (public registration disabled)
+- Secure data access enforced via Supabase Row Level Security (RLS)
+- Alphabetical sorting by surname
+- Sorting by graduation year
+- Client-side search and table filtering
+- Record deletion for authenticated admin users
+- Demo-safe mode for portfolio presentation
+
+---
+
+## Data Handling Strategy
+
+- **Database layer:** all text data stored in lowercase (normalization)
+- **Admin UI:** data rendered in uppercase for improved readability
+- **Demo mode:** uses mock data only (no real database access)
+
+This approach keeps data consistent while improving UX for non-technical users.
 
 ---
 
@@ -56,26 +73,27 @@ This application relies on **database-level security**, not frontend obfuscation
 
 ### Authentication
 
-- Users must authenticate using Supabase Auth
-- Account creation is disabled (invite-only)
-- Only authenticated users can access guest data
+- Supabase Auth (email + password)
+- Account creation disabled (invite-only)
+- No anonymous access to protected data
 
 ### Authorization (RLS)
 
-- `SELECT` access restricted to `authenticated` users
-- Public (`anon`) users have **no read permissions**
-- RLS policies enforced directly in the database
+- `SELECT` and `DELETE` restricted to `authenticated` users
+- `anon` users have **no permissions**
+- Policies enforced directly in PostgreSQL via RLS
 
-This ensures that even if the frontend code is public, unauthorized users cannot access any sensitive data.
+Even with a public repository, unauthorized users cannot access sensitive data.
 
 ---
 
 ## Tech Stack
 
-- HTML / CSS
+- HTML
+- CSS
 - Vanilla JavaScript (ES Modules)
 - Supabase
-  - Auth (email + password)
+  - Auth
   - PostgreSQL
   - Row Level Security (RLS)
 
@@ -93,10 +111,10 @@ This ensures that even if the frontend code is public, unauthorized users cannot
 
 ## Notes for Recruiters
 
-- This project intentionally uses a **public repository**
-- Security is handled correctly via Supabase Auth and RLS, not by hiding source code
-- The public alumni registration form is implemented in a **separate repository**
-- Demo mode exists solely to present functionality without exposing real data
+- This repository is intentionally **public**
+- Security is handled correctly via Supabase Auth and RLS
+- The public alumni registration form lives in a **separate repository**
+- Demo mode exists solely to present functionality safely
 
 ---
 
