@@ -1,18 +1,34 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 body {
+  max-width: 800px;
+  margin: 25px auto;
+}
+
+#form {
   display: flex;
+  margin: 0 auto;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  max-width: 800px;
-  margin: 0 auto;
+}
+
+#email {
+  margin-bottom: 15px;
+}
+#password {
+  margin-bottom: 5px;
 }
 
 table {
-  margin-top: 15px;
   border: 1px solid black;
   border-collapse: collapse;
   min-width: 700px;
   text-align: center;
+  margin: 15px auto;
 }
 
 th,
@@ -30,12 +46,12 @@ th:last-of-type {
 #div__search {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
+  margin: 20px auto;
 }
 
 #selectSort {
-  margin-left: 5px;
-  margin-right: 50px;
+  margin-right: 15px;
 }
 
 .btn-delete {
