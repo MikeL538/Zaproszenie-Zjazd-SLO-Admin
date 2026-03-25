@@ -39,17 +39,29 @@ function example() {
   createData(5, "Michał", "Kamiński", "1995", "Kapitan drużyny sportowej");
 }
 
-function createData(id, name, surname, graduation, addInfo) {
+function createData(
+  id,
+  name,
+  surname,
+  graduation,
+  addInfo,
+  school,
+  profession,
+  work_country,
+) {
   const tr = document.createElement("tr");
   tr.classList.add("tr-data");
   tr.dataset.id = id;
 
   tr.innerHTML = `
   <td><button class="btn-delete" type="button">USUŃ</BUTTON>
-  <td>${surname.toUpperCase()}</td>
-  <td>${name.toUpperCase()}</td>
+  <td>${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()}</td>
+  <td>${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()}</td>
   <td class="td-graduation">${graduation}</td>
-  <td>${addInfo}</td>
+  <td class="additional">${addInfo}</td>
+  <td>${school}</td>
+  <td>${profession}</td>
+  <td>${work_country}</td>
   `;
 
   table.appendChild(tr);
@@ -60,7 +72,9 @@ async function getData() {
 
   const { data, error } = await supabase
     .from("guest_data")
-    .select("id, name, surname, graduation, add_info, e_mail")
+    .select(
+      "id, name, surname, graduation, add_info, e_mail, school, profession, work_country",
+    )
     .order("surname", { ascending: true });
 
   if (error) {
@@ -75,7 +89,10 @@ async function getData() {
       <th>Nazwisko</th>
       <th>Imię</th>
       <th>Rok Ukończenia</th>
-      <th>Dodatkowe informacje</th>
+      <th class="additional">Dodatkowe informacje</th>
+      <th>Edukacja</th>
+      <th>Zawód</th>
+      <th>Kraj pracy</th>
     </tr>
   </thead>
     `;
@@ -86,6 +103,9 @@ async function getData() {
       guest.surname,
       guest.graduation,
       guest.add_info,
+      guest.school,
+      guest.profession,
+      guest.work_country,
     );
   });
 }

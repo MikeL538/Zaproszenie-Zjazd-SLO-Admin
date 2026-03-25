@@ -5,8 +5,8 @@
 }
 
 body {
-  max-width: 800px;
-  margin: 25px auto;
+  max-width: 1200px;
+  margin: 33px auto;
 }
 
 #form {
@@ -37,10 +37,9 @@ td {
   padding: 15px 10px;
 }
 
-td:last-of-type,
-th:last-of-type {
-  border-left: 1px solid black;
-  text-align: left;
+.additional {
+  border: 1px solid black;
+  text-align: center;
 }
 
 #div__search {
