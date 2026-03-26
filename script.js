@@ -18,25 +18,65 @@ function example() {
       <th>Nazwisko</th>
       <th>Imię</th>
       <th>Rok Ukończenia</th>
-      <th>Dodatkowe informacje</th>
+      <th class="additional">Dodatkowe informacje</th>
+      <th>Edukacja</th>
+      <th>Zawód</th>
+      <th>Kraj pracy</th>
     `;
-  createData(1, "Jan", "Kowalski", "2004", "Członek samorządu szkolnego");
-  createData(2, "Anna", "Nowak", "2008", "Organizatorka szkolnych wydarzeń");
+  createData(
+    1,
+    "Jan",
+    "Kowalski",
+    "2004",
+    "Członek samorządu szkolnego",
+    "Politechnika Warszawska – Informatyka",
+    "Programista",
+    "Polska",
+  );
+
+  createData(
+    2,
+    "Anna",
+    "Nowak",
+    "2008",
+    "Organizatorka szkolnych wydarzeń",
+    "Uniwersytet Warszawski – Zarządzanie",
+    "Project Manager",
+    "Niemcy",
+  );
+
   createData(
     3,
     "Piotr",
     "Wiśniewski",
     "1999",
     "Uczestnik konkursów informatycznych",
+    "AGH – Informatyka",
+    "Inżynier oprogramowania",
+    "USA",
   );
+
   createData(
     4,
     "Katarzyna",
     "Zielińska",
     "2012",
     "Aktywna w szkolnym wolontariacie",
+    "Uniwersytet Jagielloński – Psychologia",
+    "Psycholog",
+    "Polska",
   );
-  createData(5, "Michał", "Kamiński", "1995", "Kapitan drużyny sportowej");
+
+  createData(
+    5,
+    "Michał",
+    "Kamiński",
+    "1995",
+    "Kapitan drużyny sportowej",
+    "AWF – Wychowanie fizyczne",
+    "Trener personalny",
+    "Wielka Brytania",
+  );
 }
 
 function createData(
@@ -172,7 +212,7 @@ selectSort.addEventListener("change", () => {
       const yearA = Number(a.children[3].textContent);
       const yearB = Number(b.children[3].textContent);
 
-      return yearB - yearA;
+      return yearA - yearB;
     });
 
     rows.forEach((row) => table.appendChild(row));
