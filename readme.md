@@ -1,124 +1,98 @@
-# Alumni Reunion – Admin Panel
+# SLO Alumni Reunion Admin Panel
 
-Authenticated administrative panel for viewing and managing the list of registered alumni for the SLO reunion event.
+Authenticated admin interface for managing registrations submitted through the public SLO Alumni Reunion website. This project is used by organizers to review attendee data, search records and remove entries when needed.
 
-This application is intended **only for authorized staff (e.g. school administration)** and provides controlled access to registration data stored in Supabase.
+It is part of a two-repository setup:
 
----
+- public registration website: <https://mikel538.github.io/Zaproszenie-Zjazd-SLO/>
+- admin panel: <https://mikel538.github.io/Zaproszenie-Zjazd-SLO-Admin/>
 
-## Live Demo (Portfolio)
+## Live Demo
 
-The admin panel is available via **GitHub Pages**:
+Admin panel:
 
-👉 **https://mikel538.github.io/Zaproszenie-Zjazd-SLO-Admin/**
+<https://mikel538.github.io/Zaproszenie-Zjazd-SLO-Admin/>
 
-This demo exists **for portfolio and presentation purposes only**.
+Demo credentials:
 
----
+- Email: `test`
+- Password: `test`
 
-## Demo Access (Safe Preview Mode)
+The demo login exists for portfolio review only and uses mock in-memory data instead of real submissions.
 
-To allow reviewers to explore the functionality without exposing real personal data, the application includes a **demo login mode**.
+## Project Purpose
 
-**Demo credentials:**
-
-- **Email:** `test`
-- **Password:** `test`
-
-When logged in using demo credentials:
-
-- the application displays **mock (hardcoded) data**
-- database records are **not modified**
-- delete operations affect demo rows only
-
-> Real guest data is accessible **only** to invite-only Supabase accounts protected by authentication and Row Level Security (RLS).
-
----
-
-## Purpose
-
-- Provide authorized users with access to alumni registration data
-- Ensure personal data is protected at the database level
-- Clearly separate public registration from private administrative access
-- Demonstrate correct frontend–backend security architecture
-
----
+- Give authorized school staff access to reunion registrations
+- Keep the public registration flow separate from administrative operations
+- Protect real participant data with Supabase authentication and database policies
+- Provide a safe portfolio demo without exposing personal data
 
 ## Features
 
-- Email + password authentication (Supabase Auth)
-- Invite-only user accounts (public registration disabled)
-- Secure data access enforced via Supabase Row Level Security (RLS)
-- Alphabetical sorting by surname
+- Email and password login with Supabase Auth
+- Demo mode with hardcoded example records
+- Fetching attendee records from Supabase
+- Search across visible table content
+- Sorting by surname
 - Sorting by graduation year
-- Client-side search and table filtering
-- Record deletion for authenticated admin users
-- Demo-safe mode for portfolio presentation
+- Deleting records from the admin table
+- Public deployment through GitHub Pages
 
----
+## Security Approach
 
-## Data Handling Strategy
+This repository is public, but real data access is not based on hiding frontend code.
 
-- **Database layer:** all text data stored in lowercase (normalization)
-- **Admin UI:** data rendered in uppercase for improved readability
-- **Demo mode:** uses mock data only (no real database access)
+Security is handled through Supabase:
 
-This approach keeps data consistent while improving UX for non-technical users.
+- authenticated users sign in with email and password
+- real admin accounts are controlled separately from the public form
+- database access is restricted with Row Level Security (RLS)
+- demo credentials do not expose production data
 
----
+In practice, the app can be inspected publicly, but unauthorized users still cannot read or modify protected records if database rules are configured correctly.
 
-## Security Model
+## Data Flow
 
-This application relies on **database-level security**, not frontend obfuscation.
-
-### Authentication
-
-- Supabase Auth (email + password)
-- Account creation disabled (invite-only)
-- No anonymous access to protected data
-
-### Authorization (RLS)
-
-- `SELECT` and `DELETE` restricted to `authenticated` users
-- `anon` users have **no permissions**
-- Policies enforced directly in PostgreSQL via RLS
-
-Even with a public repository, unauthorized users cannot access sensitive data.
-
----
+1. Alumni submit the public registration form in the separate frontend repository.
+2. Records are stored in the `guest_data` table in Supabase.
+3. Authorized users sign in to this admin panel.
+4. The panel fetches rows, renders them in a table and allows filtering, sorting and deletion.
 
 ## Tech Stack
 
-- HTML
-- CSS
+- HTML5
+- CSS3
 - Vanilla JavaScript (ES Modules)
-- Supabase
-  - Auth
-  - PostgreSQL
-  - Row Level Security (RLS)
+- Supabase Auth
+- Supabase PostgreSQL
+- Supabase Row Level Security (RLS)
+- GitHub Pages
 
----
+## Local Run
 
-## Project Structure
+No build step is required.
 
-/
-├── index.html
-├── style.css
-├── script.js
-└── README.md
+1. Clone the repository:
 
----
+```bash
+git clone https://github.com/MikeL538/Zaproszenie-Zjazd-SLO-Admin.git
+```
 
-## Notes for Recruiters
+2. Open `index.html` in a browser or serve it locally.
 
-- This repository is intentionally **public**
-- Security is handled correctly via Supabase Auth and RLS
-- The public alumni registration form lives in a **separate repository**
-- Demo mode exists solely to present functionality safely
+## Repository Structure
 
----
+```text
+.
+|- index.html
+|- script.js
+|- style.css
+`- readme.md
+```
 
-## Disclaimer
+## Notes
 
-This admin panel is not intended for public use.  
-Access to real data is restricted to explicitly authorized users only.
+- This is a real utility project for a school event, not only a mock dashboard.
+- The demo mode is intentionally limited to fictional sample data.
+- Real registrations come from the public reunion website stored in a separate repository.
+- The current UI is functional and minimal, focused on administration rather than presentation.
