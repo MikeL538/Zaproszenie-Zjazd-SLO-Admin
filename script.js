@@ -6,6 +6,7 @@ const supabaseKey = "sb_publishable_kSmSt52th8XAYGbce3CtwA_uIdN8fKL";
 const supabase = createClient(supabaseUrl, supabaseKey);
 const table = document.querySelector("table");
 const buttonShowList = document.querySelector("#buttonShowList");
+const buttonSignOut = document.querySelector("#buttonSignOut");
 const searchInput = document.querySelector("#search");
 const selectSort = document.querySelector("#selectSort");
 
@@ -32,6 +33,7 @@ function example() {
     "Politechnika Warszawska – Informatyka",
     "Programista",
     "Polska",
+    false,
   );
 
   createData(
@@ -43,6 +45,7 @@ function example() {
     "Uniwersytet Warszawski – Zarządzanie",
     "Project Manager",
     "Niemcy",
+    false,
   );
 
   createData(
@@ -54,6 +57,7 @@ function example() {
     "AGH – Informatyka",
     "Inżynier oprogramowania",
     "USA",
+    false,
   );
 
   createData(
@@ -65,6 +69,7 @@ function example() {
     "Uniwersytet Jagielloński – Psychologia",
     "Psycholog",
     "Polska",
+    false,
   );
 
   createData(
@@ -76,6 +81,7 @@ function example() {
     "AWF – Wychowanie fizyczne",
     "Trener personalny",
     "Wielka Brytania",
+    false,
   );
 }
 
@@ -88,6 +94,7 @@ function createData(
   school,
   profession,
   work_country,
+  isPaid,
 ) {
   const tr = document.createElement("tr");
   tr.classList.add("tr-data");
@@ -102,7 +109,9 @@ function createData(
   <td>${school}</td>
   <td>${profession}</td>
   <td>${work_country}</td>
+  <td class="additional"><input type="checkbox"></td>
   `;
+  // ===================================================== ^^^
 
   table.appendChild(tr);
 }
@@ -133,6 +142,7 @@ async function getData() {
       <th>Edukacja</th>
       <th>Zawód</th>
       <th>Kraj pracy</th>
+      <th class="additional">$</th>
     </tr>
   </thead>
     `;
@@ -146,8 +156,14 @@ async function getData() {
       guest.school,
       guest.profession,
       guest.work_country,
+      // guest.isPaid, ================================================
     );
   });
+}
+
+async function signOut() {
+  const { error } = await supabase.auth.signOut();
+  table.innerHTML = ``;
 }
 
 // Logining
@@ -174,6 +190,16 @@ buttonShowList.addEventListener("click", async (e) => {
   }
 
   getData();
+});
+
+buttonSignOut.addEventListener("click", () => {
+  signOut();
+  const email = document.querySelector("#email");
+  const password = document.querySelector("#password");
+
+  email.value = "";
+  password.value = "";
+  searchInput.value = "";
 });
 
 // Searching

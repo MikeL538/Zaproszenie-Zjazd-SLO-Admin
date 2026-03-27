@@ -94,5 +94,5 @@ git clone https://github.com/MikeL538/Zaproszenie-Zjazd-SLO-Admin.git
 
 - This is a real utility project for a school event, not only a mock dashboard.
 - The demo mode is intentionally limited to fictional sample data.
-- Real registrations come from the public reunion website stored in a separate repository.
+- Real registrations come from the public reunion website stored in a Supabase.
 - The current UI is functional and minimal, focused on administration rather than presentation.
