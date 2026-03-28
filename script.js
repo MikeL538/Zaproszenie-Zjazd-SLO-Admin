@@ -25,7 +25,7 @@ function example() {
       <th>Kraj pracy</th>
     `;
   createData(
-    1,
+    undefined,
     "Jan",
     "Kowalski",
     "2004",
@@ -37,7 +37,7 @@ function example() {
   );
 
   createData(
-    2,
+    undefined,
     "Anna",
     "Nowak",
     "2008",
@@ -49,7 +49,7 @@ function example() {
   );
 
   createData(
-    3,
+    undefined,
     "Piotr",
     "Wiśniewski",
     "1999",
@@ -61,7 +61,7 @@ function example() {
   );
 
   createData(
-    4,
+    undefined,
     "Katarzyna",
     "Zielińska",
     "2012",
@@ -73,7 +73,7 @@ function example() {
   );
 
   createData(
-    5,
+    undefined,
     "Michał",
     "Kamiński",
     "1995",
@@ -85,6 +85,32 @@ function example() {
   );
 }
 
+function createCell(text, className = "") {
+  const td = document.createElement("td");
+  td.textContent = text ?? "";
+  if (className) td.className = className;
+  return td;
+}
+
+function createIsPaidCell(isPaid) {
+  const td = document.createElement("td");
+  td.className = "additional";
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.className = "isPaid";
+  checkbox.checked = Boolean(isPaid);
+
+  td.appendChild(checkbox);
+
+  return td;
+}
+
+function formatName(value) {
+  if (!value) return "";
+  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+}
+
 function createData(
   id,
   name,
@@ -94,24 +120,28 @@ function createData(
   school,
   profession,
   work_country,
-  isPaid,
+  is_paid,
 ) {
   const tr = document.createElement("tr");
   tr.classList.add("tr-data");
   tr.dataset.id = id;
 
-  tr.innerHTML = `
-  <td><button class="btn-delete" type="button">USUŃ</BUTTON>
-  <td>${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()}</td>
-  <td>${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()}</td>
-  <td class="td-graduation">${graduation}</td>
-  <td class="additional">${addInfo}</td>
-  <td>${school}</td>
-  <td>${profession}</td>
-  <td>${work_country}</td>
-  <td class="additional"><input type="checkbox"></td>
-  `;
-  // ===================================================== ^^^
+  const tdButton = document.createElement("td");
+  const button = document.createElement("button");
+  button.className = "btn-delete";
+  button.type = "button";
+  button.textContent = "USUŃ";
+  tdButton.appendChild(button);
+
+  tr.appendChild(tdButton);
+  tr.appendChild(createCell(formatName(surname)));
+  tr.appendChild(createCell(formatName(name)));
+  tr.appendChild(createCell(graduation, "td-graduation"));
+  tr.appendChild(createCell(addInfo, "additional"));
+  tr.appendChild(createCell(school));
+  tr.appendChild(createCell(profession));
+  tr.appendChild(createCell(work_country));
+  tr.appendChild(createIsPaidCell(is_paid));
 
   table.appendChild(tr);
 }
@@ -122,7 +152,7 @@ async function getData() {
   const { data, error } = await supabase
     .from("guest_data")
     .select(
-      "id, name, surname, graduation, add_info, e_mail, school, profession, work_country",
+      "id, name, surname, graduation, add_info, e_mail, school, profession, work_country, is_paid",
     )
     .order("surname", { ascending: true });
 
@@ -156,9 +186,16 @@ async function getData() {
       guest.school,
       guest.profession,
       guest.work_country,
-      // guest.isPaid, ================================================
+      guest.is_paid,
     );
   });
+}
+// Sign Out + onAuth
+function clearAdminView() {
+  table.innerHTML = "";
+  searchInput.value = "";
+  document.querySelector("#email").value = "";
+  document.querySelector("#password").value = "";
 }
 
 async function signOut() {
@@ -166,6 +203,35 @@ async function signOut() {
   table.innerHTML = ``;
 }
 
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_OUT" || !session) {
+    clearAdminView();
+    return;
+  }
+
+  if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+    getData();
+  }
+});
+
+async function initAuth() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session) {
+    getData();
+  } else {
+    clearAdminView();
+  }
+}
+
+initAuth();
+
+buttonSignOut.addEventListener("click", () => {
+  signOut();
+  clearAdminView();
+});
 // Logining
 buttonShowList.addEventListener("click", async (e) => {
   e.preventDefault();
@@ -188,18 +254,6 @@ buttonShowList.addEventListener("click", async (e) => {
     console.error(error);
     return;
   }
-
-  getData();
-});
-
-buttonSignOut.addEventListener("click", () => {
-  signOut();
-  const email = document.querySelector("#email");
-  const password = document.querySelector("#password");
-
-  email.value = "";
-  password.value = "";
-  searchInput.value = "";
 });
 
 // Searching
@@ -246,7 +300,6 @@ selectSort.addEventListener("change", () => {
 });
 
 // Delete from SQL
-
 async function deleteGuest(id) {
   const { error } = await supabase.from("guest_data").delete().eq("id", id);
 
@@ -271,5 +324,35 @@ document.addEventListener("click", async (e) => {
     if (success) {
       row.remove();
     }
+  }
+});
+
+async function saveIsPaid(id, isPaid) {
+  const { error } = await supabase
+    .from("guest_data")
+    .update({ is_paid: isPaid })
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    alert("Wystąpił błąd");
+    return false;
+  }
+
+  return true;
+}
+
+document.addEventListener("change", async (e) => {
+  if (!e.target.classList.contains("isPaid")) return;
+
+  const checkbox = e.target;
+  const row = checkbox.closest("tr");
+  const id = row.dataset.id;
+  const newValue = checkbox.checked;
+
+  const success = await saveIsPaid(id, newValue);
+
+  if (!success) {
+    checkbox.checked = !newValue;
   }
 });
