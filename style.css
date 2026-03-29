@@ -32,6 +32,14 @@ body {
   margin: 0 8px;
 }
 
+#amountFound {
+  margin-right: 15px;
+}
+
+#paidFound {
+  margin-right: 15px;
+}
+
 #buttonSignOut,
 #buttonShowList {
   display: flex;

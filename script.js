@@ -9,9 +9,16 @@ const buttonShowList = document.querySelector("#buttonShowList");
 const buttonSignOut = document.querySelector("#buttonSignOut");
 const searchInput = document.querySelector("#search");
 const selectSort = document.querySelector("#selectSort");
+const resultsP = document.querySelector("#amountFound");
+const paidP = document.querySelector("#paidFound");
+let resultsAmount = 0;
+let paidOnly = 0;
+let isFetchingData = false;
 
 // Example of the APP
 function example() {
+  resultsAmount = 0;
+  paidOnly = 0;
   table.innerHTML = `
   <thead>
     <tr>
@@ -23,6 +30,7 @@ function example() {
       <th>Edukacja</th>
       <th>Zawód</th>
       <th>Kraj pracy</th>
+      <th class="additional">$</th>
     `;
   createData(
     undefined,
@@ -45,7 +53,7 @@ function example() {
     "Uniwersytet Warszawski – Zarządzanie",
     "Project Manager",
     "Niemcy",
-    false,
+    true,
   );
 
   createData(
@@ -57,7 +65,7 @@ function example() {
     "AGH – Informatyka",
     "Inżynier oprogramowania",
     "USA",
-    false,
+    true,
   );
 
   createData(
@@ -81,8 +89,11 @@ function example() {
     "AWF – Wychowanie fizyczne",
     "Trener personalny",
     "Wielka Brytania",
-    false,
+    true,
   );
+
+  resultsP.innerHTML = `<p>Znaleziono: ${resultsAmount}`;
+  paidP.innerHTML = `<p>Znaleziono: ${paidOnly}`;
 }
 
 function createCell(text, className = "") {
@@ -99,7 +110,7 @@ function createIsPaidCell(isPaid) {
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.className = "isPaid";
-  checkbox.checked = Boolean(isPaid);
+  checkbox.checked = isPaid;
 
   td.appendChild(checkbox);
 
@@ -132,6 +143,11 @@ function createData(
   button.type = "button";
   button.textContent = "USUŃ";
   tdButton.appendChild(button);
+  resultsAmount++;
+  const isPaid = is_paid === true || is_paid === "true";
+  if (isPaid) {
+    paidOnly++;
+  }
 
   tr.appendChild(tdButton);
   tr.appendChild(createCell(formatName(surname)));
@@ -141,27 +157,31 @@ function createData(
   tr.appendChild(createCell(school));
   tr.appendChild(createCell(profession));
   tr.appendChild(createCell(work_country));
-  tr.appendChild(createIsPaidCell(is_paid));
+  tr.appendChild(createIsPaidCell(isPaid));
 
   table.appendChild(tr);
 }
 
 async function getData() {
-  table.innerHTML = "";
+  if (isFetchingData) return;
+  isFetchingData = true;
+  try {
+    table.innerHTML = "";
+    resultsAmount = 0;
+    paidOnly = 0;
+    const { data, error } = await supabase
+      .from("guest_data")
+      .select(
+        "id, name, surname, graduation, add_info, e_mail, school, profession, work_country, is_paid",
+      )
+      .order("surname", { ascending: true });
 
-  const { data, error } = await supabase
-    .from("guest_data")
-    .select(
-      "id, name, surname, graduation, add_info, e_mail, school, profession, work_country, is_paid",
-    )
-    .order("surname", { ascending: true });
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  table.innerHTML = `
+    table.innerHTML = `
   <thead>
     <tr>
       <th></th>
@@ -176,19 +196,24 @@ async function getData() {
     </tr>
   </thead>
     `;
-  data.forEach((guest) => {
-    createData(
-      guest.id,
-      guest.name,
-      guest.surname,
-      guest.graduation,
-      guest.add_info,
-      guest.school,
-      guest.profession,
-      guest.work_country,
-      guest.is_paid,
-    );
-  });
+    data.forEach((guest) => {
+      createData(
+        guest.id,
+        guest.name,
+        guest.surname,
+        guest.graduation,
+        guest.add_info,
+        guest.school,
+        guest.profession,
+        guest.work_country,
+        guest.is_paid,
+      );
+    });
+    resultsP.innerHTML = `<p>Znaleziono: ${resultsAmount}`;
+    paidP.innerHTML = `<p>Oplaciło: ${paidOnly}`;
+  } finally {
+    isFetchingData = false;
+  }
 }
 // Sign Out + onAuth
 function clearAdminView() {
@@ -220,7 +245,7 @@ async function initAuth() {
   } = await supabase.auth.getSession();
 
   if (session) {
-    getData();
+    return;
   } else {
     clearAdminView();
   }
@@ -272,6 +297,7 @@ searchInput.addEventListener("input", () => {
 
 // Sort Table
 selectSort.addEventListener("change", () => {
+  // sort by name
   if (selectSort.value === "1") {
     const rows = Array.from(document.querySelectorAll(".tr-data"));
 
@@ -282,9 +308,13 @@ selectSort.addEventListener("change", () => {
       return surnameA.localeCompare(surnameB, "pl");
     });
 
-    rows.forEach((row) => table.appendChild(row));
-  }
+    rows.forEach((row) => {
+      table.appendChild(row);
 
+      row.style.display = "";
+    });
+  }
+  // sort by year
   if (selectSort.value === "2") {
     const rows = Array.from(document.querySelectorAll(".tr-data"));
 
@@ -295,7 +325,30 @@ selectSort.addEventListener("change", () => {
       return yearA - yearB;
     });
 
-    rows.forEach((row) => table.appendChild(row));
+    rows.forEach((row) => {
+      table.appendChild(row);
+
+      row.style.display = "";
+    });
+  }
+  // sort by paid
+  if (selectSort.value === "3") {
+    const rows = Array.from(document.querySelectorAll(".tr-data"));
+
+    rows.forEach((row) => {
+      const checkbox = row.querySelector(".isPaid");
+      row.style.display = checkbox && checkbox.checked ? "" : "none";
+    });
+  }
+
+  // sort by not paid
+  if (selectSort.value === "4") {
+    const rows = Array.from(document.querySelectorAll(".tr-data"));
+
+    rows.forEach((row) => {
+      const checkbox = row.querySelector(".isPaid");
+      row.style.display = checkbox && !checkbox.checked ? "" : "none";
+    });
   }
 });
 
