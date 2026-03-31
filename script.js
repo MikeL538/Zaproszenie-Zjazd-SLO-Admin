@@ -26,6 +26,7 @@ function example() {
       <th>Nazwisko</th>
       <th>Imię</th>
       <th>Rok Ukończenia</th>
+      <th>Kontakt</th>
       <th class="additional">Dodatkowe informacje</th>
       <th>Edukacja</th>
       <th>Zawód</th>
@@ -37,6 +38,7 @@ function example() {
     "Jan",
     "Kowalski",
     "2004",
+    "jan.kowalski@gmail.com",
     "Członek samorządu szkolnego",
     "Politechnika Warszawska – Informatyka",
     "Programista",
@@ -49,6 +51,7 @@ function example() {
     "Anna",
     "Nowak",
     "2008",
+    "kontakt@gmail.com",
     "Organizatorka szkolnych wydarzeń",
     "Uniwersytet Warszawski – Zarządzanie",
     "Project Manager",
@@ -61,6 +64,7 @@ function example() {
     "Piotr",
     "Wiśniewski",
     "1999",
+    "kontakt@gmail.com",
     "Uczestnik konkursów informatycznych",
     "AGH – Informatyka",
     "Inżynier oprogramowania",
@@ -73,6 +77,7 @@ function example() {
     "Katarzyna",
     "Zielińska",
     "2012",
+    "kontakt@gmail.com",
     "Aktywna w szkolnym wolontariacie",
     "Uniwersytet Jagielloński – Psychologia",
     "Psycholog",
@@ -85,6 +90,7 @@ function example() {
     "Michał",
     "Kamiński",
     "1995",
+    "kontakt@gmail.com",
     "Kapitan drużyny sportowej",
     "AWF – Wychowanie fizyczne",
     "Trener personalny",
@@ -127,6 +133,7 @@ function createData(
   name,
   surname,
   graduation,
+  contact,
   addInfo,
   school,
   profession,
@@ -153,6 +160,7 @@ function createData(
   tr.appendChild(createCell(formatName(surname)));
   tr.appendChild(createCell(formatName(name)));
   tr.appendChild(createCell(graduation, "td-graduation"));
+  tr.appendChild(createCell(contact, "td-graduation"));
   tr.appendChild(createCell(addInfo, "additional"));
   tr.appendChild(createCell(school));
   tr.appendChild(createCell(profession));
@@ -172,7 +180,7 @@ async function getData() {
     const { data, error } = await supabase
       .from("guest_data")
       .select(
-        "id, name, surname, graduation, add_info, e_mail, school, profession, work_country, is_paid",
+        "id, name, surname, graduation, contact, add_info, school, profession, work_country, is_paid",
       )
       .order("surname", { ascending: true });
 
@@ -188,6 +196,7 @@ async function getData() {
       <th>Nazwisko</th>
       <th>Imię</th>
       <th>Rok Ukończenia</th>
+      <th>Kontakt</th>
       <th class="additional">Dodatkowe informacje</th>
       <th>Edukacja</th>
       <th>Zawód</th>
@@ -202,6 +211,7 @@ async function getData() {
         guest.name,
         guest.surname,
         guest.graduation,
+        guest.contact,
         guest.add_info,
         guest.school,
         guest.profession,

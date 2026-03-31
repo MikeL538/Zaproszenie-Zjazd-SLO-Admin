@@ -5,8 +5,8 @@
 }
 
 body {
-  max-width: 1200px;
-  margin: 33px auto;
+  /* max-width: 1200px; */
+  margin: 33px 25px;
   background-color: rgb(45, 45, 45);
   color: white;
   font-size: 21px;
@@ -51,7 +51,8 @@ body {
 
 table {
   border-collapse: collapse;
-  min-width: 700px;
+  overflow-x: auto;
+  max-width: 1100px;
   text-align: center;
   margin: 15px auto;
 }
@@ -71,12 +72,15 @@ td {
   border-bottom: 1px solid black;
   padding: 15px 10px;
   /* background-color: white; */
+  max-width: 200px;
+  overflow-wrap: break-word;
 }
 
 .additional {
   border-left: 2px solid black;
   border-right: 2px solid black;
   text-align: center;
+  min-width: 250px;
 }
 
 #div__search {
