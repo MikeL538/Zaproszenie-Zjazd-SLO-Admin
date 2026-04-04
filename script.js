@@ -7,6 +7,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const table = document.querySelector("table");
 const buttonShowList = document.querySelector("#buttonShowList");
 const buttonSignOut = document.querySelector("#buttonSignOut");
+const buttonBackup = document.querySelector("#buttonBackup");
 const searchInput = document.querySelector("#search");
 const selectSort = document.querySelector("#selectSort");
 const resultsP = document.querySelector("#amountFound");
@@ -14,6 +15,10 @@ const paidP = document.querySelector("#paidFound");
 let resultsAmount = 0;
 let paidOnly = 0;
 let isFetchingData = false;
+
+document.addEventListener("DOMContentLoaded", function () {
+  selectSort.value = "1";
+});
 
 // Example of the APP
 function example() {
@@ -23,6 +28,7 @@ function example() {
   <thead>
     <tr>
       <th></th>
+      <th class="additional cash">$</th>
       <th>Nazwisko</th>
       <th>Imię</th>
       <th>Rok Ukończenia</th>
@@ -31,10 +37,11 @@ function example() {
       <th>Edukacja</th>
       <th>Zawód</th>
       <th>Kraj pracy</th>
-      <th class="additional">$</th>
+
     `;
   createData(
     undefined,
+    false,
     "Jan",
     "Kowalski",
     "2004",
@@ -43,11 +50,11 @@ function example() {
     "Politechnika Warszawska – Informatyka",
     "Programista",
     "Polska",
-    false,
   );
 
   createData(
     undefined,
+    true,
     "Anna",
     "Nowak",
     "2008",
@@ -56,11 +63,11 @@ function example() {
     "Uniwersytet Warszawski – Zarządzanie",
     "Project Manager",
     "Niemcy",
-    true,
   );
 
   createData(
     undefined,
+    true,
     "Piotr",
     "Wiśniewski",
     "1999",
@@ -69,11 +76,11 @@ function example() {
     "AGH – Informatyka",
     "Inżynier oprogramowania",
     "USA",
-    true,
   );
 
   createData(
     undefined,
+    false,
     "Katarzyna",
     "Zielińska",
     "2012",
@@ -82,11 +89,11 @@ function example() {
     "Uniwersytet Jagielloński – Psychologia",
     "Psycholog",
     "Polska",
-    false,
   );
 
   createData(
     undefined,
+    true,
     "Michał",
     "Kamiński",
     "1995",
@@ -95,7 +102,6 @@ function example() {
     "AWF – Wychowanie fizyczne",
     "Trener personalny",
     "Wielka Brytania",
-    true,
   );
 
   resultsP.innerHTML = `<p>Znaleziono: ${resultsAmount}`;
@@ -111,7 +117,7 @@ function createCell(text, className = "") {
 
 function createIsPaidCell(isPaid) {
   const td = document.createElement("td");
-  td.className = "additional";
+  td.className = "additional cash";
 
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
@@ -130,6 +136,7 @@ function formatName(value) {
 
 function createData(
   id,
+  is_paid,
   name,
   surname,
   graduation,
@@ -138,7 +145,6 @@ function createData(
   school,
   profession,
   work_country,
-  is_paid,
 ) {
   const tr = document.createElement("tr");
   tr.classList.add("tr-data");
@@ -157,6 +163,7 @@ function createData(
   }
 
   tr.appendChild(tdButton);
+  tr.appendChild(createIsPaidCell(isPaid));
   tr.appendChild(createCell(formatName(surname)));
   tr.appendChild(createCell(formatName(name)));
   tr.appendChild(createCell(graduation, "td-graduation"));
@@ -165,7 +172,6 @@ function createData(
   tr.appendChild(createCell(school));
   tr.appendChild(createCell(profession));
   tr.appendChild(createCell(work_country));
-  tr.appendChild(createIsPaidCell(isPaid));
 
   table.appendChild(tr);
 }
@@ -180,7 +186,7 @@ async function getData() {
     const { data, error } = await supabase
       .from("guest_data")
       .select(
-        "id, name, surname, graduation, contact, add_info, school, profession, work_country, is_paid",
+        "id, is_paid, name, surname, graduation, contact, add_info, school, profession, work_country",
       )
       .order("surname", { ascending: true });
 
@@ -193,6 +199,7 @@ async function getData() {
   <thead>
     <tr>
       <th></th>
+      <th class="additional cash">$</th>
       <th>Nazwisko</th>
       <th>Imię</th>
       <th>Rok Ukończenia</th>
@@ -201,13 +208,14 @@ async function getData() {
       <th>Edukacja</th>
       <th>Zawód</th>
       <th>Kraj pracy</th>
-      <th class="additional">$</th>
+
     </tr>
   </thead>
     `;
     data.forEach((guest) => {
       createData(
         guest.id,
+        guest.is_paid,
         guest.name,
         guest.surname,
         guest.graduation,
@@ -216,7 +224,6 @@ async function getData() {
         guest.school,
         guest.profession,
         guest.work_country,
-        guest.is_paid,
       );
     });
     resultsP.innerHTML = `<p>Znaleziono: ${resultsAmount}`;
@@ -312,8 +319,8 @@ selectSort.addEventListener("change", () => {
     const rows = Array.from(document.querySelectorAll(".tr-data"));
 
     rows.sort((a, b) => {
-      const surnameA = a.children[1].textContent;
-      const surnameB = b.children[1].textContent;
+      const surnameA = a.children[2].textContent;
+      const surnameB = b.children[2].textContent;
 
       return surnameA.localeCompare(surnameB, "pl");
     });
@@ -329,8 +336,8 @@ selectSort.addEventListener("change", () => {
     const rows = Array.from(document.querySelectorAll(".tr-data"));
 
     rows.sort((a, b) => {
-      const yearA = Number(a.children[3].textContent);
-      const yearB = Number(b.children[3].textContent);
+      const yearA = Number(a.children[4].textContent);
+      const yearB = Number(b.children[4].textContent);
 
       return yearA - yearB;
     });
@@ -418,4 +425,39 @@ document.addEventListener("change", async (e) => {
   if (!success) {
     checkbox.checked = !newValue;
   }
+});
+
+// BACCKUP
+async function exportBackupCsv() {
+  const today = new Date().toISOString().slice(0, 10);
+
+  const { data, error } = await supabase
+    .from("guest_data")
+    .select(
+      "id, is_paid, name, surname, graduation, contact, add_info, school, profession, work_country",
+    )
+    .order("surname", { ascending: true })
+    .csv();
+
+  if (error) {
+    console.error(error);
+    alert("Nie udało się pobrać backupu CSV.");
+    return;
+  }
+
+  const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = `guest_data_backup_${today}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(url);
+}
+
+buttonBackup.addEventListener("click", async () => {
+  await exportBackupCsv();
 });
