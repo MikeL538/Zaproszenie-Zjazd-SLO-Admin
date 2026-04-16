@@ -4,17 +4,12 @@ Authenticated admin interface for managing registrations submitted through the p
 
 It is part of a two-repository setup:
 
-- public registration website: <https://mikel538.github.io/Zaproszenie-Zjazd-SLO/>
-- admin panel: <https://mikel538.github.io/Zaproszenie-Zjazd-SLO-Admin/>
+- public registration website:  https://zjazd-slo.mikeldev.online/
+- admin panel: https://zjazd-slo-admin.mikeldev.online/
 
 ## Live Demo
 
-Admin panel:
-
-<https://mikel538.github.io/Zaproszenie-Zjazd-SLO-Admin/>
-
-Demo credentials:
-
+Admin panel demo credentials:
 - Email: `test`
 - Password: `test`
 
