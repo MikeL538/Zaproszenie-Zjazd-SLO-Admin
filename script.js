@@ -105,7 +105,7 @@ function example() {
   );
 
   resultsP.innerHTML = `<p>Znaleziono: ${resultsAmount}`;
-  paidP.innerHTML = `<p>Znaleziono: ${paidOnly}`;
+  paidP.innerHTML = `<p>Opłaconych: ${paidOnly}`;
 }
 
 function createCell(text, className = "") {
